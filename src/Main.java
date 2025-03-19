@@ -1,12 +1,13 @@
+
 import com.mysql.cj.jdbc.Driver;
 
 import java.sql.*;
 import java.util.Scanner;
 
 public class Main {
-    private final static String url = "jdbc:mysql://localhost:3306/hotel_db";
-    private final static String username = "root";
-    private final static String password = "Azad@8088";
+    private final static String url = "add_your own databases url";
+    private final static String username = "add_your own datatabse username";
+    private final static String password = "add_your own database password";
 
     public static void main(String[] args) {
 
@@ -78,6 +79,16 @@ public class Main {
             System.out.println("enter the room number:");
             int roomNumber = sc.nextInt();
             sc.nextLine();
+            if(roomAvailable(con,roomNumber)){
+                System.out.println("these room is already booked check for another room ");
+               return;
+
+            }
+            else if(!roomAvailable(con,roomNumber)){
+                System.out.println("continue your booking the room is available");
+            }
+
+
             System.out.println("enter the contact number:");
             String contactDetails = sc.nextLine();
             String sql = "insert into reservations (guest_name,room_number,contact_number)values(?,?,?)";
@@ -210,7 +221,25 @@ public  static  void exit() throws  InterruptedException {
     }
     System.out.println();
 }
+    private static boolean roomAvailable(Connection con, int room_no) {
+        String query = "SELECT room_number FROM reservations WHERE room_number = ?";
+        try {
+            PreparedStatement pre_statement = con.prepareStatement(query);
+            pre_statement.setInt(1, room_no);
 
+
+
+            ResultSet res = pre_statement.executeQuery();
+
+            boolean exists = res.next(); // If it finds at least one row, returns true
+
+
+            return exists;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
 
